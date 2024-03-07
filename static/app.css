@@ -1,0 +1,17 @@
+img {
+  width: 100px;
+  height: 100px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.delete_btn {
+  background-color: red;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+}

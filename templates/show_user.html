@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block title %}{{user.first_name }} {{
+user.last_name }}{% endblock %} {% block content %}
+
+<h1>{{ user.first_name }} {{ user.last_name }}</h1>
+
+{% if user.image_url %}
+<img src="{{ user.image_url }}" alt="User Image" /><br />
+{% else %}
+<img src="{{url_for('static', filename='person.jpeg')}}" alt="Default Image" />
+{% endif %}
+
+<a href="{{ url_for('edit_user', user_id=user.id)}}"><button>Edit</button></a>
+<form
+  action="{{ url_for('delete_user', user_id=user.id )}}"
+  method="post"
+  style="display: inline"
+>
+  <button type="submit" class="delete_btn">Delete</button>
+</form>
+
+<a href="{{url_for('list_users')}}"><button>All Users</button></a>
+
+{% endblock %}
