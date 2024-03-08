@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, render_template, request, redirect, url_for
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecretkey'
@@ -61,7 +61,17 @@ def delete_user(user_id):
 
 # this is creating posts route
 
-@app.route('/users')
+@app.route('/users/<int:user_id>/posts/new', methods=['GET', 'POST'])
+def add_post(user_id):
+    user = User.query.get_or_404(user_id)
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        post = Post(title=title, content=content, created_at=datetime.utcnow(), user_id=user_id)
+        db.session.add(post)
+        db.session.commit()
+        return redirect(url_for('show_user', user_id=user_id))
+    return render_template('new_post.html', user=user)
 
 
 
