@@ -25,3 +25,12 @@ class User(db.Model):
         if image_url is not None:
             self.image_url = image_url
         
+class Post(db.Model):
+    """Post model"""
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    title = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', backref='users')

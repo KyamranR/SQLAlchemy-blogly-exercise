@@ -13,7 +13,7 @@ connect_db(app)
 
 with app.app_context():
     db.create_all()
-
+# this is creating user route
 @app.route('/')
 def redirect_to_users():
     return redirect(url_for('list_users'))
@@ -58,6 +58,14 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('list_users'))
+
+# this is creating posts route
+
+@app.route('/users')
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
