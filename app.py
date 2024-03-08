@@ -91,6 +91,13 @@ def edit_post(post_id):
         return redirect(url_for('show_post', post_id=post_id))
     return render_template('edit_post.html', post=post)
 
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    return redirect(url_for('list_users'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
