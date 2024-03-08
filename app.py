@@ -76,7 +76,7 @@ def add_post(user_id):
     return render_template('new_post.html', user=user)
 
 
-@app.route('/posts/<int:post_id')
+@app.route('/posts/<int:post_id>')
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('show_post.html', post=post)
