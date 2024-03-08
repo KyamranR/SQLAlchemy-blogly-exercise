@@ -61,7 +61,7 @@ def delete_user(user_id):
     db.session.commit()
     return redirect(url_for('list_users'))
 
-# this is creating posts route
+# this is creating post route
 
 @app.route('/users/<int:user_id>/posts/new', methods=['GET', 'POST'])
 def add_post(user_id):
@@ -80,6 +80,16 @@ def add_post(user_id):
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
     return render_template('show_post.html', post=post)
+
+@app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if request.method == 'POST':
+        post.title = request.form['title']
+        post.content = request.form['content']
+        db.session.commit()
+        return redirect(url_for('show_post', post_id=post_id))
+    return render_template('edit_post.html', post=post)
 
 
 if __name__ == '__main__':
