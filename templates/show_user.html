@@ -20,4 +20,14 @@ user.last_name }}{% endblock %} {% block content %}
 
 <a href="{{url_for('list_users')}}"><button>All Users</button></a>
 
+<h2>Posts</h2>
+
+<ul>
+  {% for post in user.posts %}
+  <li>
+    <a href="{{url_for('show_post', post_id=post.id)}}">{{ post.title }}</a>
+  </li>
+  {% endfor %}
+</ul>
+<a href="{{url_for('new_post')}}"><button>Add Post</button></a>
 {% endblock %}
