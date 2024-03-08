@@ -2,6 +2,8 @@
 
 from flask import Flask, render_template, request, redirect, url_for
 from models import db, connect_db, User, Post
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecretkey'
