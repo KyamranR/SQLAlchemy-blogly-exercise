@@ -99,9 +99,10 @@ def edit_post(post_id):
 @app.route('/posts/<int:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
+    user_id = post.user_id
     db.session.delete(post)
     db.session.commit()
-    return redirect(url_for('show_user'))
+    return redirect(url_for('show_user', user_id=user_id))
 
 
 if __name__ == '__main__':
