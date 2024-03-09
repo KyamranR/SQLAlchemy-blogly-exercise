@@ -13,6 +13,9 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
 
+dt = datetime.utcnow()
+formatted_dt = dt.strftime('%Y-%m-%d %H:%M:%S')
+
 with app.app_context():
     db.create_all()
 # this is creating user route
@@ -70,7 +73,7 @@ def add_post(user_id):
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
-        post = Post(title=title, content=content, created_at=datetime.utcnow(), user_id=user_id)
+        post = Post(title=title, content=content, created_at=formatted_dt, user_id=user_id)
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('show_post', post_id=post.id))
