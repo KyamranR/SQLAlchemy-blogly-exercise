@@ -41,7 +41,8 @@ def add_user():
 @app.route('/users/<int:user_id>')
 def show_user(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template('show_user.html', user=user)
+    posts = user.posts
+    return render_template('show_user.html', user=user, posts=posts)
 
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit_user(user_id):
@@ -72,14 +73,15 @@ def add_post(user_id):
         post = Post(title=title, content=content, created_at=datetime.utcnow(), user_id=user_id)
         db.session.add(post)
         db.session.commit()
-        return redirect(url_for('show_user', user_id=user_id))
+        return redirect(url_for('show_post', post_id=post.id))
     return render_template('new_post.html', user=user)
 
 
 @app.route('/posts/<int:post_id>')
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('show_post.html', post=post)
+    user = post.user
+    return render_template('show_post.html', post=post, user=user)
 
 @app.route('/posts/<int:post_id>/edit', methods=['GET', 'POST'])
 def edit_post(post_id):

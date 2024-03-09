@@ -19,6 +19,7 @@ class User(db.Model):
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
     image_url = db.Column(db.String(255), default='/static/person.jpg')
+    posts = db.relationship('Post', backref='users')
 
     def __init__(self, first_name, last_name, image_url=None):
         self.first_name = first_name
@@ -28,7 +29,7 @@ class User(db.Model):
         
 class Post(db.Model):
     """Post model"""
-
+    __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.Text, nullable=False)
     content = db.Column(db.Text, nullable=False)

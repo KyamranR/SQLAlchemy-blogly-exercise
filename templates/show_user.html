@@ -23,11 +23,13 @@ user.last_name }}{% endblock %} {% block content %}
 <h2>Posts</h2>
 
 <ul>
-  {% for post in user.posts %}
+  {% for post in posts %}
   <li>
     <a href="{{url_for('show_post', post_id=post.id)}}">{{ post.title }}</a>
   </li>
   {% endfor %}
 </ul>
-<a href="{{url_for('show_post')}}"><button>Add Post</button></a>
+<a href="{{url_for('add_post', user_id=user.id )}}"
+  ><button>Add Post</button></a
+>
 {% endblock %}
