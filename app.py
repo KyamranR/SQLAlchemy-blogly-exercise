@@ -61,6 +61,11 @@ def edit_user(user_id):
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
+
+    if user.posts:
+        for post in user.posts:
+            db.session.delete(post)
+            
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for('list_users'))
