@@ -54,7 +54,8 @@ class PostTag(db.Model):
 
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
-    tags = db.relationship('Tag', backref='tags')
+    tag = db.relationship('Tag', backref='tags')
+    post = db.relationship('Post', backref='posts')
 
 
 
