@@ -36,7 +36,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', backref='users')
-
+    tags = db.relationship('Tag', secondary='post_tags', backref='posts')
 
 class Tag(db.Model):
     """Tags"""
