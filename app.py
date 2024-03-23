@@ -121,7 +121,7 @@ def delete_post(post_id):
     return redirect(url_for('show_user', user_id=user_id))
 
 
-# this is creating tags
+# creating tags
 
 @app.route('/tags')
 def list_tags():

@@ -1,0 +1,12 @@
+{% extends 'base.html' %} {% block title %}Tag Details{% endblock %} {% block
+content %}
+
+<h2>{{ tag.name }}</h2>
+
+<a href="{{url_for('edit_tag', tag_id=tag.id)}}"><button>Edit</button></a>
+<form action="{{url_for('delete_tag', tag_id=tag.id)}}">
+  <button type="submit">Delete</button>
+</form>
+<a href="{{url_for('list_tags')}}"><button>Back to List</button></a>
+
+{% endblock %}
