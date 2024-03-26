@@ -35,8 +35,9 @@ class Post(db.Model):
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    user = db.relationship('User', backref='users')
-    tags = db.relationship('Tag', secondary='post_tags', backref='posts')
+    author = db.relationship('User', backref='user_posts')
+    tags = db.relationship('Tag', secondary='post_tags', backref='associated_posts')
+
 
 class Tag(db.Model):
     """Tags"""
@@ -44,6 +45,7 @@ class Tag(db.Model):
     __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False, unique=True)
+    posts = db.relationship('Post', secondary='post_tags', backref='associated_tags')
     
 
 
@@ -52,7 +54,7 @@ class PostTag(db.Model):
 
     __tablename__ = 'post_tags'
 
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id', ondelete='CASCADE'), primary_key=True)
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)
     tag = db.relationship('Tag', backref='tags')
     post = db.relationship('Post', backref='posts')

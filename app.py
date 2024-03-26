@@ -3,7 +3,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, connect_db, User, Post, Tag, PostTag
 from datetime import datetime
-
+from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecretkey'
@@ -49,7 +49,8 @@ def show_user(user_id):
     """Showing all the users"""
     user = User.query.get_or_404(user_id)
     posts = user.posts
-    return render_template('show_user.html', user=user, posts=posts)
+    tags = Tag.query.all()
+    return render_template('show_user.html', user=user, posts=posts, tags=tags)
 
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit_user(user_id):
@@ -85,18 +86,26 @@ def add_post(user_id):
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
+        tag_ids = request.form.getlist('tags')
         post = Post(title=title, content=content, created_at=formatted_dt, user_id=user_id)
+        
+
+        for tag_id in tag_ids:
+            tag = Tag.query.get(tag_id)
+            if tag:
+                post.tags.append(tag)
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('show_post', post_id=post.id))
-    return render_template('new_post.html', user=user)
+    tags = Tag.query.all()
+    return render_template('new_post.html', user=user, tags=tags)
 
 
 @app.route('/posts/<int:post_id>')
 def show_post(post_id):
     """Showing the post"""
     post = Post.query.get_or_404(post_id)
-    user = post.user
+    user = post.users
     tags = post.tags
     return render_template('show_post.html', post=post, user=user, tags=tags)
 
@@ -107,15 +116,32 @@ def edit_post(post_id):
     if request.method == 'POST':
         post.title = request.form['title']
         post.content = request.form['content']
-        db.session.commit()
+        tag_ids = request.form.getlist('tags')
+        post.tags.clear()
+        for tag_id in tag_ids:
+            tag = Tag.query.get(tag_id)
+            if tag:
+                post.tags.append(tag)
+        try:
+            db.session.commit()
+            flash('Post updated successfully', 'success')
+            return redirect(url_for('show_post', post_id=post.id))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Error: Duplicate tag association', 'danger')
         return redirect(url_for('show_post', post_id=post_id))
-    return render_template('edit_post.html', post=post)
+    tags = Tag.query.all()
+    return render_template('edit_post.html', post=post, tags=tags)
 
 @app.route('/posts/<int:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     """Deleting the post"""
     post = Post.query.get_or_404(post_id)
     user_id = post.user_id
+    post_tags = PostTag.query.filter_by(post_id=post_id).all()
+    for post_tag in post_tags:
+        db.session.delete(post_tag)
+
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for('show_user', user_id=user_id))
@@ -127,7 +153,8 @@ def delete_post(post_id):
 def list_tags():
     """Listing the tags"""
     tags = Tag.query.all()
-    return render_template('list_tags.html', tags=tags)
+    user = User.query.first()
+    return render_template('list_tags.html', tags=tags, user=user)
 
 @app.route('/tags/<int:tag_id>')
 def show_tags(tag_id):
@@ -163,8 +190,10 @@ def edit_tag(tag_id):
 def delete_tag(tag_id):
     """Deleting a tag"""
     tag = Tag.query.get_or_404(tag_id)
+    
     db.session.delete(tag)
     db.session.commit()
+    
     flash('Tag deleted successfully!', 'success')
     return redirect(url_for('list_tags'))        
 

@@ -32,4 +32,17 @@ user.last_name }}{% endblock %} {% block content %}
 <a href="{{url_for('add_post', user_id=user.id )}}"
   ><button>Add Post</button></a
 >
+
+<h2>Tags:</h2>
+<ul>
+  {% for tag in tags %}
+  <li><a href="{{url_for('show_tags', tag_id=tag.id)}}">{{tag.name}}</a></li>
+  {% endfor %}
+</ul>
+
+<form action="{{url_for('add_tag')}}" method="post">
+  <label for="tag_name">Tag Name:</label>
+  <input type="text" id="tag_name" name="name" required />
+  <button type="submit">Add Tag</button>
+</form>
 {% endblock %}

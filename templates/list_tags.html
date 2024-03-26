@@ -9,5 +9,8 @@ content %}
 </ul>
 
 <a href="{{url_for('add_tag')}}"><button>Add New Tag</button></a>
+<a href="{{url_for('show_user', user_id=user.id)}}"
+  ><button>Back to User</button></a
+>
 
 {% endblock %}
