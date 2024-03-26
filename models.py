@@ -36,7 +36,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     author = db.relationship('User', backref='user_posts')
-    tags = db.relationship('Tag', secondary='post_tags', backref='associated_posts')
+    tags = db.relationship('Tag', secondary='post_tags', backref='associated_posts', cascade='all, delete')
 
 
 class Tag(db.Model):

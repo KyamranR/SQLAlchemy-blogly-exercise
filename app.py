@@ -68,9 +68,12 @@ def edit_user(user_id):
 def delete_user(user_id):
     """Deleting the user"""
     user = User.query.get_or_404(user_id)
-
+    
     if user.posts:
         for post in user.posts:
+            post_tags = PostTag.query.filter_by(post_id=post.id).all()
+            for post_tag in post_tags:
+                db.session.delete(post_tag)
             db.session.delete(post)
             
     db.session.delete(user)
@@ -139,9 +142,10 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     user_id = post.user_id
     post_tags = PostTag.query.filter_by(post_id=post_id).all()
+    
     for post_tag in post_tags:
         db.session.delete(post_tag)
-
+        
     db.session.delete(post)
     db.session.commit()
     return redirect(url_for('show_user', user_id=user_id))
